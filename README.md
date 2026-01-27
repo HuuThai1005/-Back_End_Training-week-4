@@ -1,4 +1,4 @@
-# Week 3 Backend Project
+# Week 4 Backend Project
 
 ## Summary
 A simple REST API built with Express, TypeScript, Drizzle ORM, and PostgreSQL.
