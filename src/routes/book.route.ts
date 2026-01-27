@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BookService } from "../service/book.service";
 import { bookRepo } from "../repositories/book.repo";
-import { authMiddleware } from "../../middleware/auth.middleware";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 const bookService = new BookService(bookRepo);

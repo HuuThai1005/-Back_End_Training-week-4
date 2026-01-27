@@ -29,7 +29,7 @@ The project focuses on clean architecture, structured logging, centralized error
 - bcrypt
 - JWT
 - Vitest (testing)
-
+- Docker & Docker Compose
 ---
 
 ## Setup
@@ -38,7 +38,7 @@ The project focuses on clean architecture, structured logging, centralized error
 - Node.js >= 18
 - Bun
 - PostgreSQL >= 14
-
+- Docker 
 ---
 
 ## Environment Setup
@@ -60,6 +60,13 @@ npm run dev
 
 ### Run test
 npx vitest
+
+## Docker setup
+### Built & start service 
+docker compose up --build
+- Service: 
+  - API: http://localhost:3000/
+  - PostgreSQL: localhost:5432
 
 ## Logging & Error Handler
 ### Logging

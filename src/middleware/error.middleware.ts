@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../src/errors/app.error";
-import { logger } from "../src/utils/logger";
+import { AppError } from "../errors/app.error";
+import { logger } from "../utils/logger";
+
 
 export function errorMiddleware(
   err: any,
