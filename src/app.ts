@@ -1,6 +1,6 @@
 import express from "express";
-import authRoutes from "./routes/auth";
-import bookRoutes from "./routes/book.route";
+import authRoutes from "./auth/route";
+import bookRoutes from "./book/route";
 import { requestIdMiddleware } from "./middleware/request-id.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { logger } from "./utils/logger";
