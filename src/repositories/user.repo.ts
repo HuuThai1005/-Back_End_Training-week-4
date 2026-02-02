@@ -22,5 +22,9 @@ export const userRepo = {
     async create(data: CreateUserInput) {
     const result = await db.insert(users).values(data).returning()
     return result[0]
-}
+    },
+
+    async changePassword(userId: number, hashedPassword: string) {
+        await db.update(users).set({ password: hashedPassword }).where(eq(users.id, userId))
+    }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { userRepo } from "./user.repo";
+import { userRepo } from "../repositories/user.repo";
 import { db } from "../db";
 import { users } from "../db/schema";
 

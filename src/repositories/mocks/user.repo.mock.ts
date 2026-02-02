@@ -13,4 +13,8 @@ export const createUserRepoMock = () => ({
   create: vi.fn<
     (data: CreateUserInput) => Promise<any>
   >(),
+
+  changePassword: vi.fn<
+    (userId: number, hashedPassword: string) => Promise<void>
+  >(),
 });

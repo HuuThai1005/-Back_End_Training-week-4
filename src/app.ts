@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./auth/route";
 import bookRoutes from "./book/route";
+import userRoutes from "./user/route";
 import { requestIdMiddleware } from "./middleware/request-id.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { logger } from "./utils/logger";
@@ -12,6 +13,7 @@ app.use(requestIdMiddleware);
 
 app.use("/auth", authRoutes);
 app.use("/book", bookRoutes);
+app.use("/user", userRoutes);
 app.use(errorMiddleware);
 
 app.listen(3000, () => {

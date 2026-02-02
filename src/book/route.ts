@@ -9,7 +9,7 @@ const bookService = new BookService(bookRepo);
 /**
  * Create book (protected)
  */
-router.post("/books-create", authMiddleware, async (req, res, next) => {
+router.post("/books-create", async (req, res, next) => {
   try {
     const { title, price } = req.body;
     await bookService.create(title, price, (req as any).requestId);
@@ -30,7 +30,7 @@ router.get("/books", async (_req, res) => {
 /**
  * Delete book (protected)
  */
-router.delete("/books-delete", authMiddleware, async (req, res, next) => {
+router.delete("/books-delete", async (req, res, next) => {
   try {
     const { title } = req.body;
     await bookService.deleteByTitle(title, (req as any).requestId);
@@ -43,7 +43,7 @@ router.delete("/books-delete", authMiddleware, async (req, res, next) => {
 /**
  * Update book (protected)
  */
-router.put("/books/:title", authMiddleware, async (req, res, next) => {
+router.put("/books/:title", async (req, res, next) => {
   try {
     const oldTitle = String(req.params.title);
     const { title, price } = req.body;

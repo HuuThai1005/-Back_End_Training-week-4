@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { UserService } from "./user.service";
+import { UserService } from "../service/user.service";
 import { createUserRepoMock } from "../repositories/mocks/user.repo.mock";
 
 describe("UserService", () => {

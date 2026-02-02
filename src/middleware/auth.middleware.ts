@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../utils/jwt";
 import { AppError } from "../errors/app.error";
 
 export function authMiddleware(
@@ -16,11 +15,5 @@ export function authMiddleware(
 
   const token = authHeader.split(" ")[1];
 
-  try {
-    const payload = verifyToken(token);
-    (req as any).user = payload;
-    next();
-  } catch {
-    throw new AppError("INVALID_TOKEN", "Invalid token", 401);
-  }
+  
 }
