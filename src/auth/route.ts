@@ -23,17 +23,15 @@ router.post("/login", async (req, res, next) => {
     const { email, password } = req.body;
     const result = await userService.login(
       email,
-      password,
-      (req as any).requestId
+      password
     );
     res.json(result);
-  } catch (err) {
+  } catch (err: any) {
+    if (err.message === "PASSWORD_INCORRECT") {
+      return res.status(400).json({ message: "Password is incorrect" });
+    }
     next(err);
   }
 });
-
-
-
-
 
 export default router;

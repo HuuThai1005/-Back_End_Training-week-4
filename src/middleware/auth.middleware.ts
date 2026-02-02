@@ -15,5 +15,18 @@ export function authMiddleware(
 
   const token = authHeader.split(" ")[1];
 
-  
+}
+
+export const requireRole = (roles: ("ADMIN" | "USER")[] ) => (req: Request, _res: Response, next: NextFunction) => {
+  const user = (req as any).user;
+  if (!user) {
+      return _res.status(401).json({ message: "UNAUTHORIZED" });
+    }
+
+    if (!roles.includes(user.role)) {
+      return _res.status(403).json({ message: "FORBIDDEN" });
+    }
+
+    next();
+
 }

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { BookService } from "../service/book.service";
 import { bookRepo } from "../repositories/book.repo";
-import { authMiddleware } from "../middleware/auth.middleware";
+import { authMiddleware, requireRole } from "../middleware/auth.middleware";
+import { fakeAuth } from "../middleware/fakeAuth.middelware";
 
 const router = Router();
 const bookService = new BookService(bookRepo);
@@ -9,7 +10,7 @@ const bookService = new BookService(bookRepo);
 /**
  * Create book (protected)
  */
-router.post("/books-create", async (req, res, next) => {
+router.post("/books-create", authMiddleware ,requireRole(["ADMIN"]), async (req, res, next) => {
   try {
     const { title, price } = req.body;
     await bookService.create(title, price, (req as any).requestId);
@@ -30,7 +31,7 @@ router.get("/books", async (_req, res) => {
 /**
  * Delete book (protected)
  */
-router.delete("/books-delete", async (req, res, next) => {
+router.delete("/books-delete", authMiddleware, requireRole(["ADMIN"]), async (req, res, next) => {
   try {
     const { title } = req.body;
     await bookService.deleteByTitle(title, (req as any).requestId);
@@ -43,7 +44,7 @@ router.delete("/books-delete", async (req, res, next) => {
 /**
  * Update book (protected)
  */
-router.put("/books/:title", async (req, res, next) => {
+router.put("/books/:title", authMiddleware, requireRole(["ADMIN"]), async (req, res, next) => {
   try {
     const oldTitle = String(req.params.title);
     const { title, price } = req.body;

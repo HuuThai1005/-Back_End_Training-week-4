@@ -1,11 +1,14 @@
 import { Router } from "express";
 import { UserService } from "../service/user.service";
 import { userRepo } from "../repositories/user.repo";
+import { authMiddleware } from "../middleware/auth.middleware";
+import { requireRole } from "../middleware/auth.middleware";
+import { fakeAuth } from "../middleware/fakeAuth.middelware";
 
 const router = Router();
 const userService = new UserService(userRepo);
 
-router.put("/changePassword", async (req, res) => {
+router.put("/changePassword", requireRole(["ADMIN", "USER"]), async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
     await userService.changePassword(email, oldPassword, newPassword);
@@ -18,6 +21,15 @@ router.put("/changePassword", async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
     res.status(400).json({ message: "Invalid input" });
+  }
+});
+
+router.get("/users", authMiddleware, requireRole(["ADMIN"]),  async (req, res, next) => {
+  try {
+    const users = await userService.listAllUsers();
+    res.json({ users });
+  } catch (err) {
+    next(err);
   }
 });
 

@@ -32,12 +32,13 @@ export class UserService {
   
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        throw new Error("INVALID_CREDENTIALS");
+        throw new Error("PASSWORD_INCORRECT");
       }
   
       return {
         id: user.id,
         email: user.email,
+        role: user.role,
       };
     }
 
@@ -54,5 +55,10 @@ export class UserService {
   await this.repo.changePassword(user.id, hashed);
 
    return { success: true };
+}
+
+async listAllUsers() {
+  const users = await this.repo.listAllUsers();
+  return users;
 }
 }

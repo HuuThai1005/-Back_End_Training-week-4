@@ -26,5 +26,10 @@ export const userRepo = {
 
     async changePassword(userId: number, hashedPassword: string) {
         await db.update(users).set({ password: hashedPassword }).where(eq(users.id, userId))
+    },
+
+    async listAllUsers() {
+        const result = await db.select().from(users)
+        return result
     }
 }
