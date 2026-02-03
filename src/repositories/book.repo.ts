@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { books } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { bookingHistory } from "../db/schema";
 
 export type CreateBookInput = {
     title: string
@@ -47,9 +48,9 @@ export const bookRepo = {
             .where(eq(books.title, oldTitle));
     },
 
-    async bookingBook(title: string) {
+    async bookingBook(title: string, amount: number) {
         const book = await this.findByTitle(title);
-        return db.update(books).set({ status: "BOOKED" }).where(eq(books.title, title));
+        return db.update(books).set({ status: "BOOKED", amount: book.amount - amount }).where(eq(books.title, title));
 }
 }
 

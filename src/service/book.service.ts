@@ -51,7 +51,7 @@ export class BookService {
     return this.bookRepo.updateByTitle(oldTitle, data);
   }
 
-  async bookingBook(title: string, requestId?: string) {
+  async bookingBook(title: string, amount: number, requestId?: string) {
     if (!title) {
       throw new Error("EMPTY_TITLE");
     }
@@ -59,10 +59,10 @@ export class BookService {
     if (!existing) {
       throw new Error("BOOK_NOT_FOUND");
     }
-    const booked = existing.status === "BOOKED";
-    if (booked) {
-      throw new Error("BOOK_ALREADY_BOOKED");
+    const soldOut = existing.amount < amount;
+    if (soldOut) {
+      throw new Error("BOOK_SOLD_OUT");
     }
-    return this.bookRepo.bookingBook(title);
+    return this.bookRepo.bookingBook(title, amount)
 }
 }

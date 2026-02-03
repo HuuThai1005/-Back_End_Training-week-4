@@ -63,7 +63,8 @@ router.put("/books/:title", authMiddleware, requireRole(["ADMIN"]), async (req, 
 router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
   try {
     const title = String(req.body.title);
-    await bookService.bookingBook(title, (req as any).requestId);
+    const amount = Number(req.body.amount);
+    await bookService.bookingBook(title, amount, (req as any).requestId);
     res.json({ message: "Booked book success!" });
   } catch (err: any) {
     if (err.message === "EMPTY_TITLE") {
@@ -72,8 +73,8 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
     if (err.message === "BOOK_NOT_FOUND") {
       return res.status(404).json({ message: "Book not found" });
     }
-    if (err.message === "BOOK_ALREADY_BOOKED") {
-      return res.status(400).json({ message: "Book is already booked" });
+    if (err.message === "BOOK_SOLD_OUT") {
+      return res.status(400).json({ message: "Book is sold out" });
     }
   }
 });

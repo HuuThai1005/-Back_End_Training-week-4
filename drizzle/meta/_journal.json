@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1769047869218,
-      "tag": "0000_brave_natasha_romanoff",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1770014166786,
-      "tag": "0001_goofy_viper",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1770084582263,
-      "tag": "0002_futuristic_fenris",
+      "when": 1770106325334,
+      "tag": "0000_spotty_wrecker",
       "breakpoints": true
     }
   ]
