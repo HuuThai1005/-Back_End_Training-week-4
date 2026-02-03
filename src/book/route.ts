@@ -76,6 +76,12 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
     if (err.message === "BOOK_SOLD_OUT") {
       return res.status(400).json({ message: "Book is sold out" });
     }
+    if (err.message === "INSUFFICIENT_BOOK_AMOUNT") {
+      return res.status(400).json({ message: "Insufficient book amount" });
+    }
+    if (err.message === "INVALID_BOOKING_AMOUNT") {
+      return res.status(400).json({ message: "Amount must be greater than 0" });
+    }
   }
 });
 

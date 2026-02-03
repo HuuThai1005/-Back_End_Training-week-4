@@ -59,9 +59,15 @@ export class BookService {
     if (!existing) {
       throw new Error("BOOK_NOT_FOUND");
     }
-    const soldOut = existing.amount < amount;
+    const soldOut = existing.amount === 0;
     if (soldOut) {
       throw new Error("BOOK_SOLD_OUT");
+    }
+    if (amount > existing.amount) {
+      throw new Error("INSUFFICIENT_BOOK_AMOUNT");
+    }
+    if (amount <= 0) {
+      throw new Error("INVALID_BOOKING_AMOUNT");
     }
     return this.bookRepo.bookingBook(title, amount)
 }
