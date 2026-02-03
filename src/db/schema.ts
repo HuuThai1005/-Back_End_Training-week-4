@@ -11,5 +11,6 @@ export const users = pgTable("users", {
 export const books = pgTable("books", {
   id: serial("id").primaryKey().unique(),
   title: text("title").notNull(),
-  price: serial("price").notNull() 
+  price: serial("price").notNull(), 
+  status: text("status").notNull().default("AVAILABLE"),
 })

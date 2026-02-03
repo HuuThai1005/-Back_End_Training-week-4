@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+
+dotenv.config();
 import express from "express";
 import authRoutes from "./auth/route";
 import bookRoutes from "./book/route";
@@ -5,6 +8,7 @@ import userRoutes from "./user/route";
 import { requestIdMiddleware } from "./middleware/request-id.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { logger } from "./utils/logger";
+
 
 const app = express();
 

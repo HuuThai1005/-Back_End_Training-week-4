@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { userRepo } from "../repositories/user.repo";
 import { logger } from "../utils/logger";
 import { AppError } from "../errors/app.error";
+import { signToken } from "../utils/jwt";
 
 export class UserService {
   constructor(private readonly repo: typeof userRepo) {}
@@ -34,12 +35,20 @@ export class UserService {
       if (!isMatch) {
         throw new Error("PASSWORD_INCORRECT");
       }
-  
-      return {
+
+      const token = signToken({
         id: user.id,
         email: user.email,
         role: user.role,
-      };
+      });
+  return {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+  }
     }
 
   async changePassword(email: string, oldPass: string, newPass: string) {

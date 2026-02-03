@@ -3,12 +3,11 @@ import { UserService } from "../service/user.service";
 import { userRepo } from "../repositories/user.repo";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { requireRole } from "../middleware/auth.middleware";
-import { fakeAuth } from "../middleware/fakeAuth.middelware";
 
 const router = Router();
 const userService = new UserService(userRepo);
 
-router.put("/changePassword", requireRole(["ADMIN", "USER"]), async (req, res) => {
+router.put("/changePassword", authMiddleware, requireRole(["ADMIN", "USER"]), async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
     await userService.changePassword(email, oldPassword, newPassword);

@@ -2,7 +2,6 @@ import { Router } from "express";
 import { BookService } from "../service/book.service";
 import { bookRepo } from "../repositories/book.repo";
 import { authMiddleware, requireRole } from "../middleware/auth.middleware";
-import { fakeAuth } from "../middleware/fakeAuth.middelware";
 
 const router = Router();
 const bookService = new BookService(bookRepo);
@@ -58,6 +57,24 @@ router.put("/books/:title", authMiddleware, requireRole(["ADMIN"]), async (req, 
     res.json({ message: "Update book success!" });
   } catch (err) {
     next(err);
+  }
+});
+
+router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
+  try {
+    const title = String(req.body.title);
+    await bookService.bookingBook(title, (req as any).requestId);
+    res.json({ message: "Booked book success!" });
+  } catch (err: any) {
+    if (err.message === "EMPTY_TITLE") {
+      return res.status(404).json({ message: "Title is empty" });
+    }
+    if (err.message === "BOOK_NOT_FOUND") {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    if (err.message === "BOOK_ALREADY_BOOKED") {
+      return res.status(400).json({ message: "Book is already booked" });
+    }
   }
 });
 

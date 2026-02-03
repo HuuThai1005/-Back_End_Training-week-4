@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import type { userRepo } from "../repositories/user.repo";
+import { signToken } from "../utils/jwt";
 
 type UserRepo = typeof userRepo;
 
@@ -34,10 +35,19 @@ export class AuthService {
     if (!isMatch) {
       throw new Error("INVALID_CREDENTIALS");
     }
-
-    return {
+    const token = signToken({
       id: user.id,
       email: user.email,
+      role: user.role,
+    });
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 }

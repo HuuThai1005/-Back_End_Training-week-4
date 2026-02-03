@@ -15,6 +15,13 @@
       "when": 1770014166786,
       "tag": "0001_goofy_viper",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770084582263,
+      "tag": "0002_futuristic_fenris",
+      "breakpoints": true
     }
   ]
 }

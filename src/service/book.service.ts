@@ -50,4 +50,19 @@ export class BookService {
 
     return this.bookRepo.updateByTitle(oldTitle, data);
   }
+
+  async bookingBook(title: string, requestId?: string) {
+    if (!title) {
+      throw new Error("EMPTY_TITLE");
+    }
+    const existing = await this.bookRepo.findByTitle(title);
+    if (!existing) {
+      throw new Error("BOOK_NOT_FOUND");
+    }
+    const booked = existing.status === "BOOKED";
+    if (booked) {
+      throw new Error("BOOK_ALREADY_BOOKED");
+    }
+    return this.bookRepo.bookingBook(title);
+}
 }

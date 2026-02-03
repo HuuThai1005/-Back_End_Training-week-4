@@ -11,6 +11,7 @@ export type CreateBookInput = {
 export type UpdateBookInput = {
   title?: string;
   price?: number;
+    status?: string;
 };
 
 export const bookRepo = {
@@ -44,6 +45,11 @@ export const bookRepo = {
             .update(books)
             .set(data)
             .where(eq(books.title, oldTitle));
-    }
+    },
+
+    async bookingBook(title: string) {
+        const book = await this.findByTitle(title);
+        return db.update(books).set({ status: "BOOKED" }).where(eq(books.title, title));
+}
 }
 
