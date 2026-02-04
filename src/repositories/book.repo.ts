@@ -46,36 +46,30 @@ export const bookRepo = {
   },
 
   async bookingBook(title: string, amount: number, email: string) {
-    console.log(">>> BOOKING START", title, amount, email);
-    console.log("EMAIL BOOKING:", email);
-
     const book = await this.findByTitle(title);
-    console.log(">>> FOUND BOOK", book);
-    // update
-    console.log("STEP 1");
-  await db.update(books)
-    .set({
-      amount: book.amount - amount,
-      status: book.amount - amount === 0 ? "SOLD_OUT" : "AVAILABLE",
-    })
-    .where(eq(books.id, book.id));
+    await db
+      .update(books)
+      .set({
+        amount: book.amount - amount,
+        status: book.amount - amount === 0 ? "SOLD_OUT" : "AVAILABLE",
+      })
+      .where(eq(books.id, book.id));
+    await db.insert(bookingHistory).values({
+      bookId: book.id,
+      userEmail: email,
+      bookingAmount: amount,
+    });
 
-  // insert history
-  console.log("STEP 2");
-  await db.insert(bookingHistory).values({
-    bookId: book.id,
-    userEmail: email,
-    bookingAmount: amount,
-  });
-  console.log("STEP 3");
-
-  return true;
+    return true;
   },
   async getBookingHistory() {
     const result = await db.select().from(bookingHistory);
     return result;
   },
   async getBookingHistoryByEmail(email: string) {
-    return db.select().from(bookingHistory).where(eq(bookingHistory.userEmail, email));
+    return db
+      .select()
+      .from(bookingHistory)
+      .where(eq(bookingHistory.userEmail, email));
   },
 };
