@@ -9,12 +9,16 @@ The project focuses on clean architecture, structured logging, centralized error
 ## Features
 - User register
 - User login
+- Change password
 - JWT authentication
-- Protected book APIs
-- Create book
-- Update book
-- Delete book
+- Protected APIs
+- Create book for admin
+- Update book for admin
+- Delete book for admin
 - List books
+- List user account for admin
+- Booking book
+- View booking history
 - Structured logging (request, service, error)
 - Centralized error handling with custom AppError
 
