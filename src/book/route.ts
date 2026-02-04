@@ -2,6 +2,7 @@ import { Router } from "express";
 import { BookService } from "../service/book.service";
 import { bookRepo } from "../repositories/book.repo";
 import { authMiddleware, requireRole } from "../middleware/auth.middleware";
+import { users } from "../db/schema";
 
 const router = Router();
 const bookService = new BookService(bookRepo);
@@ -64,7 +65,8 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
   try {
     const title = String(req.body.title);
     const amount = Number(req.body.amount);
-    await bookService.bookingBook(title, amount, (req as any).requestId);
+    const email = (req as any).user.email;
+    await bookService.bookingBook(title, amount, email,(req as any).requestId);
     res.json({ message: "Booked book success!" });
   } catch (err: any) {
     if (err.message === "EMPTY_TITLE") {
@@ -84,5 +86,18 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
     }
   }
 });
+
+router.get("/booking-history", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
+    try {
+      const user = (req as any).user;
+
+      const history = user.role === "ADMIN" ? await bookRepo.getBookingHistory(): await bookRepo.getBookingHistoryByEmail(user.email);
+      res.json({ history });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 
 export default router;

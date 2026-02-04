@@ -51,7 +51,7 @@ export class BookService {
     return this.bookRepo.updateByTitle(oldTitle, data);
   }
 
-  async bookingBook(title: string, amount: number, requestId?: string) {
+  async bookingBook(title: string, amount: number, email: string, requestId?: string) {
     if (!title) {
       throw new Error("EMPTY_TITLE");
     }
@@ -69,6 +69,6 @@ export class BookService {
     if (amount <= 0) {
       throw new Error("INVALID_BOOKING_AMOUNT");
     }
-    return this.bookRepo.bookingBook(title, amount)
+    return this.bookRepo.bookingBook(title, amount, email);
 }
 }
