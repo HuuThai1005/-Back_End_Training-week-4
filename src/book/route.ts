@@ -99,5 +99,20 @@ router.get("/booking-history", authMiddleware, requireRole(["ADMIN","USER"]), as
   }
 );
 
+router.post("/search", async ( req, res, next) => {
+  try {
+    const title = String(req.body.title);
+    const books = await bookService.searchBook(title);
+    res.json({ books });
+  } catch (err: any) {
+    if (err.message === "EMPTY_TITLE") {
+      return res.status(404).json({ message: "Title is empty" });
+    }
+    if (err.message === "BOOK_NOT_FOUND") {
+      return res.status(404).json({ message: "Book not found" });
+    }
+}
+});
+
 
 export default router;

@@ -70,5 +70,16 @@ export class BookService {
       throw new Error("INVALID_BOOKING_AMOUNT");
     }
     return this.bookRepo.bookingBook(title, amount, email);
+  }
+  async searchBook(title: string) {
+    if(!title) {
+      throw new Error("EMPTY_TITLE");
+    }
+    const existing = await this.bookRepo.searchBooksByTitle(title);
+    if (!existing || existing.length === 0) {
+      throw new Error("BOOK_NOT_FOUND");
+    }
+
+    return existing;
 }
 }

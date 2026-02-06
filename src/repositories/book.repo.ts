@@ -72,4 +72,7 @@ export const bookRepo = {
       .from(bookingHistory)
       .where(eq(bookingHistory.userEmail, email));
   },
+  async searchBooksByTitle(title: string) {
+    return db.select().from(books).where(eq(books.title, title));
+  }
 };
