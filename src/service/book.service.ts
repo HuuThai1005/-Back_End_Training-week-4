@@ -5,81 +5,88 @@ type BookRepo = typeof bookRepo;
 export class BookService {
   constructor(private readonly bookRepo: BookRepo) {}
 
-  async create(title: string, price: number, requestId?: string) {
-    if (!title || price === undefined) {
+  /* ========== BOOK CRUD ========== */
+
+  async create(title: string) {
+    if (!title) {
       throw new Error("INVALID_INPUT");
     }
 
-    const existing = await this.bookRepo.findByTitle(title);
+    const existing = await this.bookRepo.findBookByTitle(title);
     if (existing) {
       throw new Error("BOOK_ALREADY_EXISTS");
     }
 
-    return this.bookRepo.create({ title, price });
+    return this.bookRepo.createBook({ title });
   }
 
   async list() {
-    return this.bookRepo.listAll();
+    return this.bookRepo.listBooks();
   }
 
-  async deleteByTitle(title: string, requestId?: string) {
+  async deleteByTitle(title: string) {
     if (!title) {
       throw new Error("INVALID_TITLE");
     }
 
-    return this.bookRepo.deleteByTitle(title);
+    return this.bookRepo.deleteBookByTitle(title);
   }
 
-  async updateByTitle(
-    oldTitle: string,
-    data: { title?: string; price?: number },
-    requestId?: string
+  async updateTitle(oldTitle: string, newTitle: string) {
+    if (!oldTitle || !newTitle) {
+      throw new Error("INVALID_INPUT");
+    }
+
+    const existing = await this.bookRepo.findBookByTitle(oldTitle);
+    if (!existing) {
+      throw new Error("BOOK_NOT_FOUND");
+    }
+
+    return this.bookRepo.updateBookTitle(oldTitle, newTitle);
+  }
+
+  /* ========== BOOKING ========== */
+
+  async bookingBook(
+    bookId: number,
+    storeId: number,
+    amount: number,
+    email: string,
   ) {
-    if (!oldTitle) {
-      throw new Error("INVALID_TITLE");
-    }
-
-    if (data.title === undefined && data.price === undefined) {
-      throw new Error("NOTHING_TO_UPDATE");
-    }
-
-    const existing = await this.bookRepo.findByTitle(oldTitle);
-    if (!existing) {
-      throw new Error("BOOK_NOT_FOUND");
-    }
-
-    return this.bookRepo.updateByTitle(oldTitle, data);
-  }
-
-  async bookingBook(title: string, amount: number, email: string, requestId?: string) {
-    if (!title) {
-      throw new Error("EMPTY_TITLE");
-    }
-    const existing = await this.bookRepo.findByTitle(title);
-    if (!existing) {
-      throw new Error("BOOK_NOT_FOUND");
-    }
-    const soldOut = existing.amount === 0;
-    if (soldOut) {
-      throw new Error("BOOK_SOLD_OUT");
-    }
-    if (amount > existing.amount) {
-      throw new Error("INSUFFICIENT_BOOK_AMOUNT");
-    }
     if (amount <= 0) {
       throw new Error("INVALID_BOOKING_AMOUNT");
     }
-    return this.bookRepo.bookingBook(title, amount, email);
+
+    const storeBook = await this.bookRepo.getStoreBook(storeId, bookId);
+    if (!storeBook) {
+      throw new Error("BOOK_NOT_IN_STORE");
+    }
+
+    if (storeBook.amount < amount) {
+      throw new Error("INSUFFICIENT_BOOK_AMOUNT");
+    }
+
+    return this.bookRepo.bookInStore(
+      storeId,
+      bookId,
+      amount,
+      email,
+    );
   }
-  async searchBook(title: string) {
-    if(!title) {
+
+  /* ========== SEARCH ========== */
+
+  async searchBook(title: string, storeId?: number) {
+    if (!title) {
       throw new Error("EMPTY_TITLE");
     }
-    const existing = await this.bookRepo.searchBooksByTitle(title);
-    if (!existing || existing.length === 0) {
+
+    const result = await this.bookRepo.searchBooks(title, storeId);
+
+    if (!result || result.length === 0) {
       throw new Error("BOOK_NOT_FOUND");
     }
 
-    return existing;
-}
+    return result;
+  }
 }

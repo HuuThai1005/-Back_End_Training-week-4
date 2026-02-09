@@ -1,5 +1,12 @@
-import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
+/* ================= USERS ================= */
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
@@ -8,18 +15,66 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+/* ================= BOOKS ================= */
 export const books = pgTable("books", {
-  id: serial("id").primaryKey().unique(),
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  price: integer("price").notNull(), 
-  status: text("status").notNull().default("AVAILABLE"),
-  amount: integer("amount").notNull().default(10),
-})
+});
 
+/* ================= STORES ================= */
+export const stores = pgTable("stores", {
+  id: serial("id").primaryKey(),
+  storeName: text("store_name").notNull(),
+});
+
+/* ========== STORE_BOOKS (KHO THEO STORE) ========== */
+export const storeBooks = pgTable("store_books", {
+  id: serial("id").primaryKey(),
+
+  storeId: integer("store_id")
+    .notNull()
+    .references(() => stores.id),
+
+  bookId: integer("book_id")
+    .notNull()
+    .references(() => books.id),
+
+  amount: integer("amount").notNull(),
+});
+
+/* ================= PRICES ================= */
+export const prices = pgTable("prices", {
+  id: serial("id").primaryKey(),
+
+  storeId: integer("store_id")
+    .notNull()
+    .references(() => stores.id),
+
+  bookId: integer("book_id")
+    .notNull()
+    .references(() => books.id),
+
+  type: text("type").notNull(),
+  price: integer("price").notNull(),
+});
+
+/* ================= BOOKING HISTORY ================= */
 export const bookingHistory = pgTable("booking_history", {
   id: serial("id").primaryKey(),
-  bookId: integer("book_id").notNull().references(() => books.id),
-  userEmail: text("user_email").notNull().references(() => users.email),
+
+  bookId: integer("book_id")
+    .notNull()
+    .references(() => books.id),
+
+  storeId: integer("store_id")
+    .notNull()
+    .references(() => stores.id),
+
+  userEmail: text("user_email")
+    .notNull()
+    .references(() => users.email),
+
   bookingAmount: integer("booking_amount").notNull(),
+
   bookedAt: timestamp("booked_at").defaultNow(),
 });
