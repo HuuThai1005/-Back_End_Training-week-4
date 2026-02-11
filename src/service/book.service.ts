@@ -48,31 +48,37 @@ export class BookService {
   /* ========== BOOKING ========== */
 
   async bookingBook(
-    bookId: number,
-    storeId: number,
-    amount: number,
-    email: string,
-  ) {
-    if (amount <= 0) {
-      throw new Error("INVALID_BOOKING_AMOUNT");
-    }
-
-    const storeBook = await this.bookRepo.getStoreBook(storeId, bookId);
-    if (!storeBook) {
-      throw new Error("BOOK_NOT_IN_STORE");
-    }
-
-    if (storeBook.amount < amount) {
-      throw new Error("INSUFFICIENT_BOOK_AMOUNT");
-    }
-
-    return this.bookRepo.bookInStore(
-      storeId,
-      bookId,
-      amount,
-      email,
-    );
+  bookId: number,
+  storeId: number,
+  amount: number,
+  email: string,
+  type: string
+) {
+  if (amount <= 0) {
+    throw new Error("INVALID_BOOKING_AMOUNT");
   }
+  if (!type || (type !== "RENT" && type !== "BUY")) {
+    throw new Error("INVALID_PRICE_TYPE");
+  }
+
+
+  const storeBook = await this.bookRepo.getStoreBook(storeId, bookId);
+  if (!storeBook) {
+    throw new Error("BOOK_NOT_IN_STORE");
+  }
+
+  if (storeBook.amount < amount) {
+    throw new Error("INSUFFICIENT_BOOK_AMOUNT");
+  }
+
+  return this.bookRepo.bookInStore(
+    storeId,
+    bookId,
+    amount,
+    type,
+    email,
+  );
+}
 
   /* ========== SEARCH ========== */
 

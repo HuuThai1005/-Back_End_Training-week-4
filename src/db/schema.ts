@@ -76,5 +76,9 @@ export const bookingHistory = pgTable("booking_history", {
 
   bookingAmount: integer("booking_amount").notNull(),
 
+  type: text("type").notNull(),     
+  
+  price: integer("price").notNull(), 
+
   bookedAt: timestamp("booked_at").defaultNow(),
 });

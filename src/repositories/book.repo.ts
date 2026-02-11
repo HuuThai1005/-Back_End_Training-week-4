@@ -58,65 +58,95 @@ export const bookRepo = {
   },
 
   async bookInStore(
-    storeId: number,
-    bookId: number,
-    amount: number,
-    email: string,
-  ) {
-    return db.transaction(async (tx) => {
-      const storeBook = await tx
-        .select()
-        .from(storeBooks)
-        .where(
-          and(
-            eq(storeBooks.storeId, storeId),
-            eq(storeBooks.bookId, bookId),
-          ),
-        )
-        .then((r) => r[0]);
+  storeId: number,
+  bookId: number,
+  amount: number,
+  type: string,
+  email: string,
+) {
+  return db.transaction(async (tx) => {
+    if (amount <= 0) throw new Error("INVALID_AMOUNT");
 
-      if (!storeBook) throw new Error("BOOK_NOT_IN_STORE");
+    const storeBook = await tx
+      .select()
+      .from(storeBooks)
+      .where(
+        and(
+          eq(storeBooks.storeId, storeId),
+          eq(storeBooks.bookId, bookId),
+        ),
+      )
+      .then((r) => r[0]);
 
-      await tx
-        .update(storeBooks)
-        .set({ amount: storeBook.amount - amount })
-        .where(eq(storeBooks.id, storeBook.id));
+    if (!storeBook) throw new Error("BOOK_NOT_IN_STORE");
+    if (storeBook.amount < amount) throw new Error("NOT_ENOUGH_BOOK");
 
-      await tx.insert(bookingHistory).values({
-        bookId,
-        storeId,
-        userEmail: email,
-        bookingAmount: amount,
-      });
+    const priceRow = await tx
+      .select()
+      .from(prices)
+      .where(
+        and(
+          eq(prices.storeId, storeId),
+          eq(prices.bookId, bookId),
+          eq(prices.type, type),
+        ),
+      )
+      .then((r) => r[0]);
 
-      return true;
+    if (!priceRow) throw new Error("PRICE_NOT_FOUND");
+
+
+    await tx
+      .update(storeBooks)
+      .set({ amount: storeBook.amount - amount })
+      .where(eq(storeBooks.id, storeBook.id));
+
+    await tx.insert(bookingHistory).values({
+      bookId,
+      storeId,
+      userEmail: email,
+      bookingAmount: amount,
+      type,
+      price: priceRow.price,
     });
-  },
+
+    return true;
+  });
+}, 
+
 
   /* ================= SEARCH ================= */
 
   async searchBooks(title: string, storeId?: number) {
-    const condition = storeId
-      ? and(
-          like(books.title, `%${title}%`),
-          eq(storeBooks.storeId, storeId),
-        )
-      : like(books.title, `%${title}%`);
+  const conditions = [
+    like(books.title, `%${title}%`),
+  ];
 
-    return db
-      .select({
-        bookId: books.id,
-        title: books.title,
-        storeId: storeBooks.storeId,
-        amount: storeBooks.amount,
-        price: prices.price,
-        type: prices.type,
-      })
-      .from(books)
-      .innerJoin(storeBooks, eq(storeBooks.bookId, books.id))
-      .innerJoin(prices, eq(prices.bookId, books.id))
-      .where(condition);
-  },
+  if (storeId) {
+    conditions.push(eq(storeBooks.storeId, storeId));
+  }
+
+  return db
+    .select({
+      bookId: books.id,
+      title: books.title,
+      storeId: storeBooks.storeId,
+      amount: storeBooks.amount,
+      price: prices.price,
+      type: prices.type,
+    })
+    .from(books)
+    .innerJoin(storeBooks, eq(storeBooks.bookId, books.id))
+    .innerJoin(
+      prices,
+      and(
+        eq(prices.bookId, books.id),
+        eq(prices.storeId, storeBooks.storeId),
+      ),
+    )
+    .where(and(...conditions));
+},
+
 
   /* ================= HISTORY ================= */
 

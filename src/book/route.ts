@@ -66,14 +66,15 @@ router.put("/books/:title", authMiddleware, requireRole(["ADMIN"]), async (req, 
 
 router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
    try {
-      const { bookId, storeId, amount } = req.body;
+      const { bookId, storeId, amount, type } = req.body;
       const email = (req as any).user.email;
 
       await bookService.bookingBook(
         Number(bookId),
         Number(storeId),
         Number(amount),
-        email
+        email,
+        type,
       );
 
       res.json({ message: "Booked book success!" });
@@ -83,6 +84,9 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
       }
       if (err.message === "INSUFFICIENT_BOOK_AMOUNT") {
         return res.status(400).json({ message: "Insufficient book amount" });
+      }
+      if (err.message === "INVALID_PRICE_TYPE") {
+        return res.status(400).json({ message: "Invalid price type" });
       }
       if (err.message === "INVALID_BOOKING_AMOUNT") {
         return res.status(400).json({ message: "Invalid booking amount" });
