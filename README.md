@@ -19,9 +19,13 @@ The project focuses on clean architecture, structured logging, centralized error
 - List user account for admin
 - Booking book
 - View booking history
+- Search book
+- View all store
+- Create store 
+- Add book to store 
+- View all book of store 
 - Structured logging (request, service, error)
 - Centralized error handling with custom AppError
-
 ---
 
 ## Tech Stack
