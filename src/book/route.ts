@@ -98,7 +98,6 @@ router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), asy
 router.get("/booking-history", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
     try {
       const user = (req as any).user;
-
       const history =
         user.role === "ADMIN"
           ? await bookRepo.getBookingHistory()

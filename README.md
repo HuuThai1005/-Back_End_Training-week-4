@@ -102,10 +102,19 @@ Authorization: Bearer <token>
 - POST /auth/login
 
 ### Books 
-- POST /books/books-create
-- GET /books/books
-- POST /books/books-delete
-- PUT /books/books/:title
+- POST /book/books-create
+- GET /book/books
+- POST /book/books-delete
+- PUT /book/books/:title
+- POST /book/books-booking
+- GET /book/booking-history
+- POST /book/search 
+
+### Store
+- GET store/stores
+- POST store/add-store
+- POST store/add-book-to-store
+- POST store/store-books
 
 
 
