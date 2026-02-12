@@ -116,6 +116,9 @@ Authorization: Bearer <token>
 - POST store/add-book-to-store
 - POST store/store-books
 
+### User
+- GET user/users
+- POST user/changePassword
 
 
 
