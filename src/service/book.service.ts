@@ -56,27 +56,17 @@ async bookingBook(
   email: string,
   type: string
 ) {
-  console.log("booking params:", {
-    bookId,
-    storeId,
-    amount,
-    email,
-    type
-  });
 
   const storeBook = await this.bookRepo.getStoreBook(storeId, bookId);
-  console.log("storeBook:", storeBook);
 
   if (!storeBook) {
     throw new Error("BOOK_NOT_IN_STORE");
   }
 
-  console.log("checking amount...");
   if (storeBook.amount < amount) {
     throw new Error("INSUFFICIENT_BOOK_AMOUNT");
   }
 
-  console.log("calling repo booking...");
   return this.bookRepo.bookInStore(
     storeId,
     bookId,
