@@ -65,34 +65,27 @@ router.put("/books/:title", authMiddleware, requireRole(["ADMIN"]), async (req, 
 });
 
 router.post("/books-booking", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {
-   try {
-      const { bookId, storeId, amount, type } = req.body;
-      const email = (req as any).user.email;
+  try {
+    console.log("=== BOOKING REQUEST ===");
+    console.log("body:", req.body);
+    console.log("user:", (req as any).user);
 
-      await bookService.bookingBook(
-        Number(bookId),
-        Number(storeId),
-        Number(amount),
-        email,
-        type,
-      );
+    const { bookId, storeId, amount, type } = req.body;
+    const email = (req as any).user.email;
 
-      res.json({ message: "Booked book success!" });
-    } catch (err: any) {
-      if (err.message === "BOOK_NOT_IN_STORE") {
-        return res.status(404).json({ message: "Book not in this store" });
-      }
-      if (err.message === "INSUFFICIENT_BOOK_AMOUNT") {
-        return res.status(400).json({ message: "Insufficient book amount" });
-      }
-      if (err.message === "INVALID_PRICE_TYPE") {
-        return res.status(400).json({ message: "Invalid price type" });
-      }
-      if (err.message === "INVALID_BOOKING_AMOUNT") {
-        return res.status(400).json({ message: "Invalid booking amount" });
-      }
-      next(err);
-    }
+    await bookService.bookingBook(
+      Number(bookId),
+      Number(storeId),
+      Number(amount),
+      email,
+      type,
+    );
+
+    res.json({ message: "Booked book success!" });
+  } catch (err: any) {
+    console.error("BOOKING ERROR:", err); 
+    next(err);
+  }
 });
 
 router.get("/booking-history", authMiddleware, requireRole(["ADMIN","USER"]), async (req, res, next) => {

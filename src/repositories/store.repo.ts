@@ -12,7 +12,7 @@ export const storeRepo = {
     const result = await db.select().from(storeBooks).where(and(eq(storeBooks.storeId, storeId), eq(storeBooks.bookId, bookId)));
     return result[0] ?? null;
   },
-    async createStore(data: { storeName: string }) {
+    async createStore(data: { storeName: string, regionId: number }) {
     const result = await db.insert(stores).values(data).returning();
     return result[0];
   },

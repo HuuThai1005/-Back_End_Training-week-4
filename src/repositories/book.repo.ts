@@ -57,96 +57,93 @@ export const bookRepo = {
     return result[0] ?? null;
   },
 
+  /* ================= BOOKING ================= */
+
   async bookInStore(
-  storeId: number,
-  bookId: number,
-  amount: number,
-  type: string,
-  email: string,
-) {
-  return db.transaction(async (tx) => {
-    if (amount <= 0) throw new Error("INVALID_AMOUNT");
+    storeId: number,
+    bookId: number,
+    amount: number,
+    type: string,
+    email: string,
+  ) {
+    return db.transaction(async (tx) => {
+      /* ===== check stock ===== */
+      const storeBook = await tx
+        .select()
+        .from(storeBooks)
+        .where(
+          and(
+            eq(storeBooks.storeId, storeId),
+            eq(storeBooks.bookId, bookId),
+          ),
+        )
+        .then((r) => r[0]);
+      /* ===== lấy region của store ===== */
+      const store = await tx
+        .select()
+        .from(stores)
+        .where(eq(stores.id, storeId))
+        .then((r) => r[0]);
 
-    const storeBook = await tx
-      .select()
-      .from(storeBooks)
-      .where(
-        and(
-          eq(storeBooks.storeId, storeId),
-          eq(storeBooks.bookId, bookId),
-        ),
-      )
-      .then((r) => r[0]);
+      /* ===== lấy giá theo REGION ===== */
+      const priceRow = await tx
+        .select()
+        .from(prices)
+        .where(
+          and(
+            eq(prices.regionId, store.regionId),
+            eq(prices.type, type),
+          ),
+        )
+        .then((r) => r[0]);
 
-    if (!storeBook) throw new Error("BOOK_NOT_IN_STORE");
-    if (storeBook.amount < amount) throw new Error("NOT_ENOUGH_BOOK");
+      /* ===== update kho ===== */
+      await tx
+        .update(storeBooks)
+        .set({ amount: storeBook.amount - amount })
+        .where(eq(storeBooks.id, storeBook.id));
 
-    const priceRow = await tx
-      .select()
-      .from(prices)
-      .where(
-        and(
-          eq(prices.storeId, storeId),
-          eq(prices.bookId, bookId),
-          eq(prices.type, type),
-        ),
-      )
-      .then((r) => r[0]);
+      /* ===== lưu history ===== */
+      await tx.insert(bookingHistory).values({
+        bookId,
+        storeId,
+        userEmail: email,
+        bookingAmount: amount,
+        type,
+        price: priceRow.price,
+      });
 
-    if (!priceRow) throw new Error("PRICE_NOT_FOUND");
-
-
-    await tx
-      .update(storeBooks)
-      .set({ amount: storeBook.amount - amount })
-      .where(eq(storeBooks.id, storeBook.id));
-
-    await tx.insert(bookingHistory).values({
-      bookId,
-      storeId,
-      userEmail: email,
-      bookingAmount: amount,
-      type,
-      price: priceRow.price,
+      return true;
     });
-
-    return true;
-  });
-}, 
-
+  },
 
   /* ================= SEARCH ================= */
 
   async searchBooks(title: string, storeId?: number) {
-  const conditions = [
-    like(books.title, `%${title}%`),
-  ];
+    const conditions = [like(books.title, `%${title}%`)];
 
-  if (storeId) {
-    conditions.push(eq(storeBooks.storeId, storeId));
-  }
+    if (storeId) {
+      conditions.push(eq(storeBooks.storeId, storeId));
+    }
 
-  return db
-    .select({
-      bookId: books.id,
-      title: books.title,
-      storeId: storeBooks.storeId,
-      amount: storeBooks.amount,
-      price: prices.price,
-      type: prices.type,
-    })
-    .from(books)
-    .innerJoin(storeBooks, eq(storeBooks.bookId, books.id))
-    .innerJoin(
-      prices,
-      and(
-        eq(prices.bookId, books.id),
-        eq(prices.storeId, storeBooks.storeId),
-      ),
-    )
-    .where(and(...conditions));
-},
-
+    return db
+      .select({
+        bookId: books.id,
+        title: books.title,
+        storeId: storeBooks.storeId,
+        amount: storeBooks.amount,
+        price: prices.price,
+        type: prices.type,
+      })
+      .from(books)
+      .innerJoin(storeBooks, eq(storeBooks.bookId, books.id))
+      .innerJoin(stores, eq(stores.id, storeBooks.storeId))
+      .innerJoin(
+        prices,
+        eq(prices.regionId, stores.regionId), 
+      )
+      .where(and(...conditions));
+  },
 
   /* ================= HISTORY ================= */
 

@@ -20,6 +20,14 @@ app.use("/auth", authRoutes);
 app.use("/book", bookRoutes);
 app.use("/user", userRoutes);
 app.use("/store", storeRoutes);
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error("GLOBAL ERROR:");
+  console.error(err.stack);
+
+  res.status(500).json({
+    message: err.message,
+  });
+});
 app.use(errorMiddleware);
 
 app.listen(3000, () => {

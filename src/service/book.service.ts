@@ -1,6 +1,8 @@
 import type { bookRepo } from "../repositories/book.repo";
 
 type BookRepo = typeof bookRepo;
+const PRICE_TYPES = ["RENT", "BUY"] as const;
+type PriceType = (typeof PRICE_TYPES)[number];
 
 export class BookService {
   constructor(private readonly bookRepo: BookRepo) {}
@@ -47,30 +49,34 @@ export class BookService {
 
   /* ========== BOOKING ========== */
 
-  async bookingBook(
+async bookingBook(
   bookId: number,
   storeId: number,
   amount: number,
   email: string,
   type: string
 ) {
-  if (amount <= 0) {
-    throw new Error("INVALID_BOOKING_AMOUNT");
-  }
-  if (!type || (type !== "RENT" && type !== "BUY")) {
-    throw new Error("INVALID_PRICE_TYPE");
-  }
-
+  console.log("booking params:", {
+    bookId,
+    storeId,
+    amount,
+    email,
+    type
+  });
 
   const storeBook = await this.bookRepo.getStoreBook(storeId, bookId);
+  console.log("storeBook:", storeBook);
+
   if (!storeBook) {
     throw new Error("BOOK_NOT_IN_STORE");
   }
 
+  console.log("checking amount...");
   if (storeBook.amount < amount) {
     throw new Error("INSUFFICIENT_BOOK_AMOUNT");
   }
 
+  console.log("calling repo booking...");
   return this.bookRepo.bookInStore(
     storeId,
     bookId,

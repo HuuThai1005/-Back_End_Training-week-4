@@ -18,13 +18,16 @@ router.get("/stores",  authMiddleware, requireRole(["ADMIN"]), async (req, res) 
 
 router.post("/add-store",  authMiddleware, requireRole(["ADMIN"]), async (req, res) => {
     try {
-        const { storeName } = req.body;
-        const newStore = await storeService.createStore(storeName);
+        const { storeName, regionId } = req.body;
+        const newStore = await storeService.createStore(storeName, regionId);
         res.status(201).json({message: "Store created successfully", store: newStore });
     } catch (err: any) {
         if (err.message === "STORE_ALREADY_EXISTS") {
             return res.status(400).json({ message: "Store already exists" });
         }   
+        if (err.message === "INVALID_REGION_ID") {
+            return res.status(400).json({ message: "Invalid region ID" });
+        }
         if (err.message === "INVALID_STORE_NAME") {
             return res.status(400).json({ message: "Invalid store name" });
         }

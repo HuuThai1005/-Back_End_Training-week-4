@@ -1,6 +1,6 @@
 import { storeRepo } from "../repositories/store.repo";
 export class StoreService {
-  async createStore(storeName: string) {
+  async createStore(storeName: string, regionId: number) {
     const existingStore = await storeRepo.findStoreByName(storeName);
     if (existingStore) {
       throw new Error("STORE_ALREADY_EXISTS");
@@ -8,7 +8,10 @@ export class StoreService {
     if (!storeName || storeName.trim() === "") {
       throw new Error("INVALID_STORE_NAME");
     }
-    return storeRepo.createStore({ storeName });
+    if (!regionId || regionId <= 0) {
+      throw new Error("INVALID_REGION_ID");
+    }
+    return storeRepo.createStore({ storeName, regionId });
   }
 
   async addBookToStore(storeId: number, bookId: number, amount: number) {

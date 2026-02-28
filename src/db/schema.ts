@@ -21,10 +21,19 @@ export const books = pgTable("books", {
   title: text("title").notNull(),
 });
 
+/* ================= REGIONS ================= */
+export const regions = pgTable("regions", {
+  id: serial("id").primaryKey(),
+  region_name: text("region_name").notNull().unique(),
+});
+
 /* ================= STORES ================= */
 export const stores = pgTable("stores", {
   id: serial("id").primaryKey(),
   storeName: text("store_name").notNull(),
+  regionId: integer("region_id")
+    .notNull()
+    .references(() => regions.id),
 });
 
 /* ========== STORE_BOOKS (KHO THEO STORE) ========== */
@@ -46,15 +55,12 @@ export const storeBooks = pgTable("store_books", {
 export const prices = pgTable("prices", {
   id: serial("id").primaryKey(),
 
-  storeId: integer("store_id")
+  regionId: integer("region_id")
     .notNull()
-    .references(() => stores.id),
+    .references(() => regions.id),
 
-  bookId: integer("book_id")
-    .notNull()
-    .references(() => books.id),
+  type: text("type").notNull(), 
 
-  type: text("type").notNull(),
   price: integer("price").notNull(),
 });
 
@@ -82,3 +88,4 @@ export const bookingHistory = pgTable("booking_history", {
 
   bookedAt: timestamp("booked_at").defaultNow(),
 });
+
