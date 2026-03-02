@@ -2,10 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 import express from "express";
-import authRoutes from "./auth/route";
-import bookRoutes from "./book/route";
-import userRoutes from "./user/route";
-import storeRoutes from "./store/route";
+import authRoutes from "./routes/auth/route"; ;
+import bookRoutes from "./routes/book/route";
+import userRoutes from "./routes/user/route";
+import storeRoutes from "./routes/store/route";
 import { requestIdMiddleware } from "./middleware/request-id.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { logger } from "./utils/logger";
