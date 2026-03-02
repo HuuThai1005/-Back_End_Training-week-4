@@ -2,7 +2,7 @@ import { Router } from "express";
 import { BookService } from "../service/book.service";
 import { bookRepo } from "../repositories/book.repo";
 import { authMiddleware, requireRole } from "../middleware/auth.middleware";
-import { users } from "../db/schema";
+import { users } from "../db/users_schema";
 import { title } from "process";
 
 const router = Router();

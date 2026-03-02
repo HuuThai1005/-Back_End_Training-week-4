@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { users } from "../db/schema";
+import { users } from "../db/users_schema";
 import { eq } from "drizzle-orm";
 
 export type CreateUserInput = {

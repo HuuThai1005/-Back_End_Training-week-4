@@ -5,7 +5,7 @@ import {
   storeBooks,
   prices,
   bookingHistory,
-} from "../db/schema";
+} from "../db/users_schema";
 import { eq, and, like } from "drizzle-orm";
 
 /* ================= BOOK ================= */

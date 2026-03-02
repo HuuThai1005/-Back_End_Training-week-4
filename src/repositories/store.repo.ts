@@ -1,6 +1,6 @@
 import { db } from "../db";
-import { stores } from "../db/schema";
-import { storeBooks } from "../db/schema";
+import { stores } from "../db/users_schema";
+import { storeBooks } from "../db/users_schema";
 import { eq, and } from "drizzle-orm";
 
 export const storeRepo = {
