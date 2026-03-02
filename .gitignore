@@ -1,2 +1,4 @@
 ## Enviroment file
-.env 
+*.env 
+## Node modules
+node_modules/
