@@ -1,4 +1,4 @@
-import { storeRepo } from "../repositories/store.repo";
+import { storeRepo } from "../../repositories/store/store.repo";
 export class StoreService {
   async createStore(storeName: string, regionId: number) {
     const existingStore = await storeRepo.findStoreByName(storeName);

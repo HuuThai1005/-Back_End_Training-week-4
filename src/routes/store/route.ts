@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { StoreService } from "../service/store.service";
-import { authMiddleware, requireRole } from "../middleware/auth.middleware";
+import { StoreService } from "../../service/store/store.service";
+import { authMiddleware, requireRole } from "../../middleware/auth.middleware";
 
 const router = Router();
 const storeService = new StoreService();

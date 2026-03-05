@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { BookService } from "../../src/service/book.service";
+import { BookService } from "../service/book/book.service";
 
 const mockBookRepo = {
   findByTitle: vi.fn(),

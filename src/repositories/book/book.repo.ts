@@ -1,11 +1,11 @@
-import { db } from "../db";
+import { db } from "../../db";
 import {
   books,
   stores,
   storeBooks,
   prices,
   bookingHistory,
-} from "../db/users_schema";
+} from "../../db/schema";
 import { eq, and, like } from "drizzle-orm";
 
 /* ================= BOOK ================= */

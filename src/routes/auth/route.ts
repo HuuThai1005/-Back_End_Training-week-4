@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { UserService } from "../service/user.service";
-import { userRepo } from "../repositories/user.repo";
+import { UserService } from "../../service/user/user.service";
+import { userRepo } from "../../repositories/user/user.repo";
 
 const router = Router();
 const userService = new UserService(userRepo);

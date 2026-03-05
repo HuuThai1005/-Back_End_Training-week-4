@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import type { CreateUserInput } from "../user.repo";
+import type { CreateUserInput } from "../user/user.repo";
 
 export const createUserRepoMock = () => ({
   findByEmail: vi.fn<

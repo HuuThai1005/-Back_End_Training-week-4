@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { userRepo } from "../repositories/user.repo";
+import { userRepo } from "../repositories/user/user.repo";
 import { db } from "../db";
-import { users } from "../db/users_schema";
+import { users } from "../db/schema";
 
 describe("userRepo (integration)", () => {
   beforeEach(async () => {

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { UserService } from "../service/user.service";
-import { userRepo } from "../repositories/user.repo";
-import { authMiddleware } from "../middleware/auth.middleware";
-import { requireRole } from "../middleware/auth.middleware";
+import { UserService } from "../../service/user/user.service";
+import { userRepo } from "../../repositories/user/user.repo";
+import { authMiddleware } from "../..//middleware/auth.middleware";
+import { requireRole } from "../../middleware/auth.middleware";
 
 const router = Router();
 const userService = new UserService(userRepo);

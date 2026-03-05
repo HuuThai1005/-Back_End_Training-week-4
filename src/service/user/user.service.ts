@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
-import { userRepo } from "../repositories/user.repo";
-import { logger } from "../utils/logger";
-import { AppError } from "../errors/app.error";
-import { signToken } from "../utils/jwt";
+import { userRepo } from "../../repositories/user/user.repo";
+import { logger } from "../../utils/logger";
+import { AppError } from "../../errors/app.error";
+import { signToken } from "../../utils/jwt";
 
 export class UserService {
   constructor(private readonly repo: typeof userRepo) {}

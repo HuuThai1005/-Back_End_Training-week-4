@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import type { userRepo } from "../repositories/user.repo";
-import { signToken } from "../utils/jwt";
+import type { userRepo } from "../../repositories/user/user.repo";
+import { signToken } from "../../utils/jwt";
 
 type UserRepo = typeof userRepo;
 

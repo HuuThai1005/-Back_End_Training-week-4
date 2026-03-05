@@ -1,4 +1,4 @@
-import type { bookRepo } from "../repositories/book.repo";
+import type { bookRepo } from "../../repositories/book/book.repo";
 
 type BookRepo = typeof bookRepo;
 const PRICE_TYPES = ["RENT", "BUY"] as const;
